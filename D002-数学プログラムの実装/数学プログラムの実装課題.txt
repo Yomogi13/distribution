@@ -1,0 +1,166 @@
+下記の6問について、JAVAで実装し提出すること。
+
+FizzBuzz
+与えられた数値までの自然数のシーケンスを返すプログラムを記載する。
+
+実装内容
+・その数が3で割り切れるときは"Fizz“を出力する
+・その数が5で割り切れるときは"Buzz“を出力する
+・3と5の両方で割り切れるときは"FizzBuzz"を出力する
+
+
+
+Fibonacci Numbers
+・フィボナッチ数列のシーケンスを返すプログラムを記載する。
+
+Intersection Determination of Two Segments of Line
+・2次元平面上の線分ABとCDの端点4点ABCDが与えられたとき、その2つの線分が交差するか否かを判定するプログラムを記載する。
+
+Estimation of Landing Site of a Missile
+・原点(0,0)から加速度(ax, ay)でs秒間加速する剛体の着地地点x(y=0)を求めるプログラムを書け。
+
+
+Tower of Coins
+あなたに時間t与える。時間t経過時に、縦に積みあがっているコインの数だけお小遣いをもらうことができる。
+
+あなたは時間1ごとに、コインを1枚積み上げようと試みる。
+k枚目のコインを積み上げるのに成功する確率は1/kである。
+成功するとタワーの枚数が1枚増え、失敗すると0枚に戻ってしまう。
+
+あなたは、タワーを積み上げる他に、「何もしない」という選択をすることもでる。
+あなたは獲得できるお小遣いの期待値を最大化しようと行動することとする。
+
+お小遣いの期待値を求めるプログラムを記載する。
+
+e.g.
+
+(t=1) 1枚のコインを積む確率は1なので、期待値は1
+(t=2) 1枚目のコインについては上と同じ。2枚目に分岐する。2枚目を積む確率は1/2なので
+「積む」を選択したときの期待値は1「何もしない」を選んでも1枚のコインは詰み上がっているので期待値は1。期待値が変わらないので、どちらを選んでも同じ。つまり期待値は1。
+(t=3) 1枚目のコインについては同じ。2枚目のコインを詰む確率は1/2だが、失敗しても3枚目のコインは確率1で積めるので
+2枚目のコインの失敗したときの期待値が1になる。さらに2枚目の積み上げに成功した場合、3枚目のコインを積むことに成功する確率は1/3なので
+「積む」を選択した時の期待値は1/3 * 3 + 0 * 2 /3 = 1。「何もしない」場合は期待値2なので、この場合は「何もしない」を選択する。
+つまり最終的な期待値は、2 * 1/2 + 1 * 1/2 = 1.5になる。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Point {
+    int x, y;
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+public class point {
+    // 2つのベクトルの外積を計算するメソッド
+    private static int crossProduct(Point A, Point B, Point C) {
+        int x1 = B.x - A.x;
+        int y1 = B.y - A.y;
+        int x2 = C.x - A.x;
+        int y2 = C.y - A.y;
+        return x1 * y2 - x2 * y1;
+    }
+
+    // 線分ABと線分CDが交差するかどうかを判定するメソッド
+    private static boolean doIntersect(Point A, Point B, Point C, Point D) {
+        int cp1 = crossProduct(A, B, C);
+        int cp2 = crossProduct(A, B, D);
+        int cp3 = crossProduct(C, D, A);
+        int cp4 = crossProduct(C, D, B);
+
+        // 線分ABと線分CDが交差する条件
+        if ((cp1 * cp2 < 0) && (cp3 * cp4 < 0)) {
+            return true;
+        }
+
+        // 特殊なケース：線分ABが線分CDの一方の端点を含む場合
+        if (cp1 == 0 && onSegment(A, B, C)) {
+            return true;
+        }
+
+        if (cp2 == 0 && onSegment(A, B, D)) {
+            return true;
+        }
+
+        if (cp3 == 0 && onSegment(C, D, A)) {
+            return true;
+        }
+
+        if (cp4 == 0 && onSegment(C, D, B)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // 点Pが線分AB上にあるかどうかを判定するメソッド
+    private static boolean onSegment(Point A, Point B, Point P) {
+        return (P.x >= Math.min(A.x, B.x) && P.x <= Math.max(A.x, B.x) &&
+                P.y >= Math.min(A.y, B.y) && P.y <= Math.max(A.y, B.y));
+    }
+
+    public static void main(String[] args) {
+        // 4つの点の座標を設定
+        Point A = new Point(1, 1);
+        Point B = new Point(10, 1);
+        Point C = new Point(1, 2);
+        Point D = new Point(10, 2);
+
+        // 交差判定
+        boolean isIntersect = doIntersect(A, B, C, D);
+
+        if (isIntersect) {
+            System.out.println("線分ABと線分CDは交差します。");
+        } else {
+            System.out.println("線分ABと線分CDは交差しません。");
+        }
+    }
+}
+
+
+
+
+public class PrimeNumbers {
+
+    public static void main(String[] args) {
+        int maxNumber = 100;　 // 素数を探す範囲の最大値
+        boolean[] isPrime = new boolean[maxNumber + 1]; // 素数かどうかを示すフラグ配列
+
+        // 初期化: 2からmaxNumberまでの数を素数と仮定する
+        for (int i = 2; i <= maxNumber; i++) {
+            isPrime[i] = true;
+        }
+
+        // 素数を見つける
+        for (int p = 2; p * p <= maxNumber; p++) {
+            // 素数でない数の倍数を除外
+            if (isPrime[p]) {
+                for (int i = p * p; i <= maxNumber; i += p) {
+                    isPrime[i] = false;
+                }
+            }
+        }
+
+        // 結果
+        System.out.println("1から" + maxNumber + "までの素数:");
+        for (int i = 2; i <= maxNumber; i++) {
+            if (isPrime[i]) {
+                System.out.print(i + " ");
+            }
+        }
+    }
+}
+
